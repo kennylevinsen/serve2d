@@ -1,5 +1,6 @@
 {
    "address": ":8080",
+   "maxRead": 10,
    "logging": true,
    "protocols": [
       {

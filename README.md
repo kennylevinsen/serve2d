@@ -29,27 +29,31 @@ I called the first toy version "serve", and needed to call the new directory in 
 Due to potentially large amounts of parameters, serve2d consumes a json configuration file. The only parameter taken by serve2d is the name of this file. The format is as follows:
 
    {
-      // Listening address as given directly to net.Listen
+      // Listening address as given directly to net.Listen.
       "address": ":80",
 
-      // Whether or not to log things (optional, defaults to false)
+      // Maximum read size for protocol detection before fallback or failure.
+      // Defaults to 128
+      "maxRead": 10,
+
+      // Whether or not to log things (optional, defaults to false).
       "logging": true,
 
       // If logging to file is wanted rather than stdout, set this to the
-      // wanted filename (optional, defaults to logging to stdout)
+      // wanted filename (optional, defaults to logging to stdout).
       "logFile": "serve2d.log", // Filename if log t
 
-      // The enabled ProtocolHandlers
+      // The enabled ProtocolHandlers.
       "protocols": [
          {
-            // Name of the ProtocolHandler
+            // Name of the ProtocolHandler.
             "kind": "proxy",
 
             // If this ProtocolHandler should not detect the protocol, but
-            // rather just be a fallback
+            // rather just be a fallback.
             "default": false,
 
-            // Protocol-specific configuration
+            // Protocol-specific configuration.
             "conf": {
                "magic": "SSH",
                "target": "localhost:22"

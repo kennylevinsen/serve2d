@@ -12,15 +12,17 @@ import (
 )
 
 var (
-	server *serve2.Server
-	conf   Config
-	logger func(format string, v ...interface{})
+	server    *serve2.Server
+	conf      Config
+	confReady bool
+	logger    func(format string, v ...interface{})
 )
 
 type Config struct {
 	Address   string
 	Logging   bool
 	LogFile   string `json:"logFile,omitempty"`
+	maxRead   int    `json:"maxRead,omitempty"`
 	Protocols []Protocol
 }
 
@@ -34,11 +36,11 @@ func logit(format string, msg ...interface{}) {
 	defer func() {
 		if r := recover(); r != nil {
 			println("Log failed: ", r)
+			panic(r)
 		}
-		panic(r)
 	}()
 
-	if logger != nil {
+	if logger != nil || !confReady {
 		log.Printf(format, msg...)
 	}
 }
@@ -68,7 +70,13 @@ func main() {
 		panic(err)
 	}
 
+	confReady = true
+
 	server = serve2.New()
+
+	if conf.maxRead != 0 {
+		server.BytesToCheck = conf.maxRead
+	}
 
 	if conf.Logging {
 		if conf.LogFile != "" {
