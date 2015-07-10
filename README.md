@@ -88,4 +88,4 @@ Same as DISCARD, start by sending "DISCARD". Not configuration. If you feel sill
 # More info
 For more details about this project, see the underlying library:
 
-   github.com/joushou/serve2
+      github.com/joushou/serve2
