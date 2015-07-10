@@ -14,13 +14,13 @@ All bytes read by serve2 are of course fed into whatever ends up having to handl
 # Installation
 serve2d can be installed with:
 
-   go get github.com/joushou/serve2d
+      go get github.com/joushou/serve2d
 
 It can be run with:
 
-   go build github.com/joushou/serve2d
-   go install github.com/joushou/serve2d
-   serve2d conf.json
+      go build github.com/joushou/serve2d
+      go install github.com/joushou/serve2d
+      serve2d conf.json
 
 # What's up with the name?
 I called the first toy version "serve", and needed to call the new directory in my development folder something else, so it became serve2. 'd' was added to this configurable front-end (daemon), to distinguish it from the library.
@@ -28,39 +28,39 @@ I called the first toy version "serve", and needed to call the new directory in 
 # Usage
 Due to potentially large amounts of parameters, serve2d consumes a json configuration file. The only parameter taken by serve2d is the name of this file. The format is as follows:
 
-   {
-      // Listening address as given directly to net.Listen.
-      "address": ":80",
+      {
+         // Listening address as given directly to net.Listen.
+         "address": ":80",
 
-      // Maximum read size for protocol detection before fallback or failure.
-      // Defaults to 128
-      "maxRead": 10,
+         // Maximum read size for protocol detection before fallback or failure.
+         // Defaults to 128
+         "maxRead": 10,
 
-      // Whether or not to log things (optional, defaults to false).
-      "logging": true,
+         // Whether or not to log things (optional, defaults to false).
+         "logging": true,
 
-      // If logging to file is wanted rather than stdout, set this to the
-      // wanted filename (optional, defaults to logging to stdout).
-      "logFile": "serve2d.log", // Filename if log t
+         // If logging to file is wanted rather than stdout, set this to the
+         // wanted filename (optional, defaults to logging to stdout).
+         "logFile": "serve2d.log", // Filename if log t
 
-      // The enabled ProtocolHandlers.
-      "protocols": [
-         {
-            // Name of the ProtocolHandler.
-            "kind": "proxy",
+         // The enabled ProtocolHandlers.
+         "protocols": [
+            {
+               // Name of the ProtocolHandler.
+               "kind": "proxy",
 
-            // If this ProtocolHandler should not detect the protocol, but
-            // rather just be a fallback.
-            "default": false,
+               // If this ProtocolHandler should not detect the protocol, but
+               // rather just be a fallback.
+               "default": false,
 
-            // Protocol-specific configuration.
-            "conf": {
-               "magic": "SSH",
-               "target": "localhost:22"
+               // Protocol-specific configuration.
+               "conf": {
+                  "magic": "SSH",
+                  "target": "localhost:22"
+               }
             }
-         }
-      ]
-   }
+         ]
+      }
 
 # Available ProtocolHandlers
 
