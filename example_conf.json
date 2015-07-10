@@ -1,0 +1,20 @@
+{
+   "address": ":8080",
+   "logging": true,
+   "protocols": [
+      {
+         "kind": "echo"
+      },
+      {
+         "kind": "discard",
+         "default": true
+      },
+      {
+         "kind": "proxy",
+         "conf": {
+            "magic": "SSH",
+            "target": "localhost:22"
+         }
+      }
+   ]
+}
