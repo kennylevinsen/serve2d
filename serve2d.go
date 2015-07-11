@@ -15,17 +15,19 @@ var (
 	server    *serve2.Server
 	conf      Config
 	confReady bool
-	logger    func(format string, v ...interface{})
+	logger    func(string, ...interface{})
 )
 
+// Config is the top-level config
 type Config struct {
 	Address   string
-	Logging   bool
+	LogStdout bool   `json:"logStdout,omitempty"`
 	LogFile   string `json:"logFile,omitempty"`
-	maxRead   int    `json:"maxRead,omitempty"`
+	MaxRead   int    `json:"maxRead,omitempty"`
 	Protocols []Protocol
 }
 
+// Protocol is the part of config defining individual protocols
 type Protocol struct {
 	Kind      string
 	AsDefault bool                   `json:"default,omitempty"`
@@ -74,11 +76,11 @@ func main() {
 
 	server = serve2.New()
 
-	if conf.maxRead != 0 {
-		server.BytesToCheck = conf.maxRead
+	if conf.LogStdout && conf.LogFile != "" {
+		panic("Unable to both log to stdout and to logfile")
 	}
 
-	if conf.Logging {
+	if conf.LogStdout || conf.LogFile != "" {
 		if conf.LogFile != "" {
 			file, err := os.Create(conf.LogFile)
 			if err != nil {
@@ -87,9 +89,16 @@ func main() {
 			}
 			log.SetOutput(file)
 		}
+
 		logger = log.Printf
 		server.Logger = log.Printf
 	}
+
+	if conf.MaxRead != 0 {
+		server.BytesToCheck = conf.MaxRead
+	}
+
+	logit("Maximum buffer size: %d", server.BytesToCheck)
 
 	l, err := net.Listen("tcp", conf.Address)
 	if err != nil {
@@ -127,9 +136,18 @@ func main() {
 				panic("TLS declaration is missing valid key")
 			}
 
-			protos, ok := v.Conf["protos"].([]string)
+			var protos []string
+			y, ok := v.Conf["protos"].([]interface{})
 			if !ok {
-				panic("TLS declaration is missing valid protocols")
+				panic("TLS protos declaration invalid")
+			}
+
+			for _, x := range y {
+				proto, ok := x.(string)
+				if !ok {
+					panic("TLS protos declaration invalid")
+				}
+				protos = append(protos, proto)
 			}
 
 			handler, err = proto.NewTLS(protos, cert, key)
@@ -150,6 +168,10 @@ func main() {
 		} else {
 			server.AddHandler(handler)
 		}
+	}
+
+	if server.DefaultProtocol != nil {
+		logit("Default protocol set to: %v", server.DefaultProtocol)
 	}
 
 	server.Serve(l)

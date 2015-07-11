@@ -18,9 +18,11 @@ serve2d can be installed with:
 
 It can be run with:
 
-      go build github.com/joushou/serve2d
-      go install github.com/joushou/serve2d
-      serve2d conf.json
+      cd $GOPATH/src/joushou/serve2d
+      go build
+      ./serve2d example_conf.json
+
+Do note that the example_conf has the TLS protocol enabled, requiring a cert.pem and key.pem file (can be generated with http://golang.org/src/crypto/tls/generate_cert.go). To avoid this, simply remove the TLS entry.
 
 # What's up with the name?
 I called the first toy version "serve", and needed to call the new directory in my development folder something else, so it became serve2. 'd' was added to this configurable front-end (daemon), to distinguish it from the library.
@@ -33,15 +35,17 @@ Due to potentially large amounts of parameters, serve2d consumes a json configur
          "address": ":80",
 
          // Maximum read size for protocol detection before fallback or failure.
-         // Defaults to 128
+         // Defaults to 128.
          "maxRead": 10,
 
-         // Whether or not to log things (optional, defaults to false).
-         "logging": true,
+         // Logging to stdout.
+         // Defaults to false.
+         "logStdout": true,
 
-         // If logging to file is wanted rather than stdout, set this to the
-         // wanted filename (optional, defaults to logging to stdout).
-         "logFile": "serve2d.log", // Filename if log t
+         // Logging to file. Note that only one logging destination can be
+         // enabled at a given time.
+         // Defaults to empty string, meaning disabled.
+         "logFile": "serve2d.log",
 
          // The enabled ProtocolHandlers.
          "protocols": [
@@ -49,11 +53,14 @@ Due to potentially large amounts of parameters, serve2d consumes a json configur
                // Name of the ProtocolHandler.
                "kind": "proxy",
 
-               // If this ProtocolHandler should not detect the protocol, but
-               // rather just be a fallback.
+               // Setting this flag to true means that this ProtocolHandler
+               // will not be used in protocol detection, but instead be used
+               // as a fallback in case of failed detection.
+               // Defaults to false.
                "default": false,
 
                // Protocol-specific configuration.
+               // Defaults to empty.
                "conf": {
                   "magic": "SSH",
                   "target": "localhost:22"
@@ -68,16 +75,16 @@ Due to potentially large amounts of parameters, serve2d consumes a json configur
 Simply dials another service to handle the protocol. Matches protocol using the user-defined string.
 
 ### Configuration
-magic (string): The bytes to look for in order to identify the protocol
-target (string): The address as given directly to net.Dial to call the real service.
+magic (string): The bytes to look for in order to identify the protocol. Example: "SSH".
+target (string): The address as given directly to net.Dial to call the real service. Example: "localhost:22".
 
 ## tls
 Looks for a TLS1.0-1.3 ClientHello handshake, and feeds it into Go's TLS handling. The resulting net.Conn is fed back through the protocol detection, allowing for any other supported protocol to go over TLS.
-
+The certificates required can be generated with [http://golang.org/src/crypto/tls/generate_cert.go].
 ### Configuration
-cert (string): The certificate PEM file path to use for the server
-key (string): The key PEM file path to use for the server
-protos ([]string): The protocols the TLS server will advertise support for in the handshake.
+cert (string): The certificate PEM file path to use for the server. Example: "cert.pem".
+key (string): The key PEM file path to use for the server. Example: "key.pem".
+protos ([]string): The protocols the TLS server will advertise support for in the handshake. Example: ["http/1.1", "ssh"]
 
 ## echo
 A test protocol. Requires that the client starts out by sending "ECHO" (which will by echoed by itself, of course). No configuration.
@@ -86,6 +93,4 @@ A test protocol. Requires that the client starts out by sending "ECHO" (which wi
 Same as DISCARD, start by sending "DISCARD". Not configuration. If you feel silly, try DISCARD over TLS!
 
 # More info
-For more details about this project, see the underlying library:
-
-      github.com/joushou/serve2
+For more details about this project, see the underlying library: [http://github.com/joushou/serve2]

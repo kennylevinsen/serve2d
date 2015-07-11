@@ -1,7 +1,7 @@
 {
    "address": ":8080",
-   "maxRead": 10,
-   "logging": true,
+   "maxRead": 32,
+   "logStdout": true,
    "protocols": [
       {
          "kind": "echo"
