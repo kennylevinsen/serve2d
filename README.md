@@ -69,28 +69,27 @@ Due to potentially large amounts of parameters, serve2d consumes a json configur
          ]
       }
 
-# Available ProtocolHandlers
+# ProtocolHandlers
 
 ## proxy
 Simply dials another service to handle the protocol. Matches protocol using the user-defined string.
 
-### Configuration
-magic (string): The bytes to look for in order to identify the protocol. Example: "SSH".
-target (string): The address as given directly to net.Dial to call the real service. Example: "localhost:22".
+* magic (string): The bytes to look for in order to identify the protocol. Example: "SSH".
+* target (string): The address as given directly to net.Dial to call the real service. Example: "localhost:22".
 
 ## tls
 Looks for a TLS1.0-1.3 ClientHello handshake, and feeds it into Go's TLS handling. The resulting net.Conn is fed back through the protocol detection, allowing for any other supported protocol to go over TLS.
-The certificates required can be generated with [http://golang.org/src/crypto/tls/generate_cert.go].
-### Configuration
-cert (string): The certificate PEM file path to use for the server. Example: "cert.pem".
-key (string): The key PEM file path to use for the server. Example: "key.pem".
-protos ([]string): The protocols the TLS server will advertise support for in the handshake. Example: ["http/1.1", "ssh"]
+The certificates required can be generated with http://golang.org/src/crypto/tls/generate_cert.go.
+
+* cert (string): The certificate PEM file path to use for the server. Example: "cert.pem".
+* key (string): The key PEM file path to use for the server. Example: "key.pem".
+* protos ([]string): The protocols the TLS server will advertise support for in the handshake. Example: ["http/1.1", "ssh"]
 
 ## echo
 A test protocol. Requires that the client starts out by sending "ECHO" (which will by echoed by itself, of course). No configuration.
 
 ## discard
-Same as DISCARD, start by sending "DISCARD". Not configuration. If you feel silly, try DISCARD over TLS!
+Same as DISCARD, start by sending "DISCARD". No configuration. If you feel silly, try DISCARD over TLS!
 
 # More info
-For more details about this project, see the underlying library: [http://github.com/joushou/serve2]
+For more details about this project, see the underlying library: http://github.com/joushou/serve2
