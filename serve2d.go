@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
 	"os"
+	"path"
 
 	"github.com/joushou/serve2"
 	"github.com/joushou/serve2/proto"
@@ -45,6 +48,29 @@ func logit(format string, msg ...interface{}) {
 	if logger != nil || !confReady {
 		log.Printf(format, msg...)
 	}
+}
+
+type httpHandler struct {
+	notFoundMsg string
+}
+
+func (h httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	// We add the "./" to make things relative
+	p := "." + path.Clean(r.URL.Path)
+
+	content, err := ioutil.ReadFile(p)
+	if err != nil {
+		logit("http could not read file %s: %v", p, err)
+		w.WriteHeader(404)
+		fmt.Fprintf(w, "%s", h.notFoundMsg)
+		return
+	}
+
+	fmt.Fprintf(w, "%s", content)
 }
 
 func main() {
@@ -128,7 +154,7 @@ func main() {
 		case "tls":
 			cert, ok := v.Conf["cert"].(string)
 			if !ok {
-				panic("TLS decleration is missing valid certificate")
+				panic("TLS declaration is missing valid certificate")
 			}
 
 			key, ok := v.Conf["key"].(string)
@@ -155,6 +181,18 @@ func main() {
 				logit("TLS configuration failed")
 				panic(err)
 			}
+		case "http":
+			h := httpHandler{}
+			c, ok := v.Conf["notFoundMsg"]
+			if !ok {
+				h.notFoundMsg = "<!DOCTYPE html><html><body>404</body></html>"
+			} else {
+				h.notFoundMsg, ok = c.(string)
+				if !ok {
+					panic("HTTP notFoundMsg declaration invalid")
+				}
+			}
+			handler = proto.NewHTTP(h)
 		case "echo":
 			handler = proto.NewEcho()
 		case "discard":

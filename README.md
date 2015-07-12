@@ -85,6 +85,17 @@ The certificates required can be generated with http://golang.org/src/crypto/tls
 * key (string): The key PEM file path to use for the server. Example: "key.pem".
 * protos ([]string): The protocols the TLS server will advertise support for in the handshake. Example: ["http/1.1", "ssh"]
 
+As tls works as a transport, it can be used for anything, not just HTTP. tls + proxy handler for SSH would make it possible to do the following to grant you stealthy SSH over TLS, which would be indistinguishable from HTTPS traffic (the named pipe/mkfifo is used to connect both stdin and stdout of netcat and openssl):
+
+      mkfifo np
+      nc -l 8888 < np | openssl s_client -connect hostwithserve2:443 -tls1 -quiet > np &
+      ssh -p 8888 localhost
+
+## http
+Simple file-server that serves from where the server is run (to be changed very soon). It guards against navigating out of the directory.
+
+* notFoundMsg (string): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
+
 ## echo
 A test protocol. Requires that the client starts out by sending "ECHO" (which will by echoed by itself, of course). No configuration.
 
