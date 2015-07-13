@@ -95,7 +95,8 @@ As tls works as a transport, it can be used for anything, not just HTTP. tls + p
 Simple file-server without directory listing (might change in the future). It guards against navigating out of the directory with some simple path magic.
 
 * path (string): Path to serve from. Example: "/srv/http/"
-* notFoundMsg (string): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
+* defaultFile (string, optional): File to serve for /. Example: "index.html"
+* notFoundMsg (string, optional): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
 
 ## echo
 A test protocol. Requires that the client starts out by sending "ECHO" (which will by echoed by itself, of course). No configuration.

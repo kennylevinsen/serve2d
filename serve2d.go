@@ -51,7 +51,7 @@ func logit(format string, msg ...interface{}) {
 }
 
 type httpHandler struct {
-	path, notFoundMsg string
+	path, defaultFile, notFoundMsg string
 }
 
 func (h httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -62,6 +62,9 @@ func (h httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// We add the "./" to make things relative
 	p := "." + path.Clean(r.URL.Path)
 
+	if p == "./" {
+		p += h.defaultFile
+	}
 	// We then put the origin on there
 	p = path.Join(h.path, p)
 
@@ -193,6 +196,16 @@ func main() {
 				h.notFoundMsg, ok = c.(string)
 				if !ok {
 					panic("HTTP notFoundMsg declaration invalid")
+				}
+			}
+
+			c, ok = v.Conf["defaultFile"]
+			if !ok {
+				h.defaultFile = "index.html"
+			} else {
+				h.defaultFile, ok = c.(string)
+				if !ok {
+					panic("HTTP defaultFile declaration invalid")
 				}
 			}
 
