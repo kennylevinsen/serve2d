@@ -92,8 +92,9 @@ As tls works as a transport, it can be used for anything, not just HTTP. tls + p
       ssh -p 8888 localhost
 
 ## http
-Simple file-server that serves from where the server is run (to be changed very soon). It guards against navigating out of the directory.
+Simple file-server without directory listing (might change in the future). It guards against navigating out of the directory with some simple path magic.
 
+* path (string): Path to serve from. Example: "/srv/http/"
 * notFoundMsg (string): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
 
 ## echo

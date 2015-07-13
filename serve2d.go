@@ -51,7 +51,7 @@ func logit(format string, msg ...interface{}) {
 }
 
 type httpHandler struct {
-	notFoundMsg string
+	path, notFoundMsg string
 }
 
 func (h httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -61,6 +61,9 @@ func (h httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// We add the "./" to make things relative
 	p := "." + path.Clean(r.URL.Path)
+
+	// We then put the origin on there
+	p = path.Join(h.path, p)
 
 	content, err := ioutil.ReadFile(p)
 	if err != nil {
@@ -192,6 +195,12 @@ func main() {
 					panic("HTTP notFoundMsg declaration invalid")
 				}
 			}
+
+			h.path, ok = v.Conf["path"].(string)
+			if !ok {
+				panic("HTTP path declaration invalid")
+			}
+
 			handler = proto.NewHTTP(h)
 		case "echo":
 			handler = proto.NewEcho()

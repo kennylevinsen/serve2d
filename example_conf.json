@@ -16,6 +16,12 @@
             "magic": "SSH",
             "target": "localhost:22"
          }
+      },
+      {
+         "kind": "http",
+         "conf": {
+            "path": "."
+         }
       }
    ]
 }
