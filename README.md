@@ -97,6 +97,7 @@ Simple file-server without directory listing (might change in the future). It gu
 * path (string): Path to serve from. Example: "/srv/http/"
 * defaultFile (string, optional): File to serve for /. Example: "index.html"
 * notFoundMsg (string, optional): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
+* notFoundFile (string, optional): 404 file. Example: "404.html"
 
 ## echo
 A test protocol. Requires that the client starts out by sending "ECHO" (which will by echoed by itself, of course). No configuration.

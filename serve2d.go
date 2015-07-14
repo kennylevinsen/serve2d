@@ -189,17 +189,34 @@ func main() {
 			}
 		case "http":
 			h := httpHandler{}
-			c, ok := v.Conf["notFoundMsg"]
-			if !ok {
-				h.notFoundMsg = "<!DOCTYPE html><html><body>404</body></html>"
-			} else {
-				h.notFoundMsg, ok = c.(string)
-				if !ok {
-					panic("HTTP notFoundMsg declaration invalid")
-				}
+			msg, msgOk := v.Conf["notFoundMsg"]
+			filename, fileOk := v.Conf["notFoundFile"]
+			if fileOk && msgOk {
+				panic("HTTP notFoundMsg and notFoundFile declared simultaneously")
 			}
 
-			c, ok = v.Conf["defaultFile"]
+			if !msgOk && !fileOk {
+				h.notFoundMsg = "<!DOCTYPE html><html><body><h1>404</h1></body></html>"
+			} else if msgOk {
+				h.notFoundMsg, msgOk = msg.(string)
+				if !msgOk {
+					panic("HTTP notFoundMsg declaration invalid")
+				}
+			} else if fileOk {
+				f, ok := filename.(string)
+				if !ok {
+					panic("HTTP notFoundFile declaration invalid")
+				}
+
+				x, err := ioutil.ReadFile(f)
+				if err != nil {
+					logit("HTTP unable to open notFoundFile")
+					panic(err)
+				}
+				h.notFoundMsg = string(x)
+			}
+
+			c, ok := v.Conf["defaultFile"]
 			if !ok {
 				h.defaultFile = "index.html"
 			} else {
