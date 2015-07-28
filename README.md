@@ -72,9 +72,9 @@ Due to potentially large amounts of parameters, serve2d consumes a json configur
 # ProtocolHandlers
 
 ## proxy
-Simply dials another service to handle the protocol. Matches protocol using the user-defined string.
+Simply dials another service to handle the protocol. Matches protocol using the user-defined string. If an array of strings is provided, then MultiProxy will be used instead of Proxy internally, which will try to match any of the provided strings, from shortest to longest, progressively requesting more data as necessary.
 
-* magic (string): The bytes to look for in order to identify the protocol. Example: "SSH".
+* magic (string or []string): The bytes to look for in order to identify the protocol. Example: "SSH" or ["GET", "POST", "HEAD"]
 * target (string): The address as given directly to net.Dial to call the real service. Example: "localhost:22".
 
 ## tls
@@ -92,7 +92,7 @@ As tls works as a transport, it can be used for anything, not just HTTP. tls + p
       ssh -p 8888 localhost
 
 ## http
-Simple file-server without directory listing (might change in the future). It guards against navigating out of the directory with some simple path magic.
+Simple file-server without directory listing (might change in the future). It guards against navigating out of the directory with some simple path magic. It identifies HTTP traffic by checking for possible methods ("GET", "PUT", "HEAD", "POST", "TRACE", "PATCH", "DELETE", "OPTIONS", "CONNECT"). Forwarding to another HTTP server can be done by just putting this list of methods in as magics for a "proxy" handler.
 
 * path (string): Path to serve from. Example: "/srv/http/"
 * defaultFile (string, optional): File to serve for /. Example: "index.html"

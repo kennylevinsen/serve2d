@@ -147,8 +147,9 @@ func main() {
 		)
 		switch v.Kind {
 		case "proxy":
-			magic, ok := v.Conf["magic"].(string)
-			if !ok {
+			magic, mok := v.Conf["magic"].(string)
+			magicSlice, sok := v.Conf["magic"].([]interface{})
+			if !mok && !sok {
 				panic("Proxy declaration is missing valid magic")
 			}
 
@@ -156,7 +157,20 @@ func main() {
 			if !ok {
 				panic("Proxy declaration is missing valid target")
 			}
-			handler = proto.NewProxy([]byte(magic), "tcp", target)
+
+			if mok {
+				handler = proto.NewProxy([]byte(magic), "tcp", target)
+			} else {
+				magics := make([][]byte, len(magicSlice))
+				for i := range magicSlice {
+					magic, ok := magicSlice[i].(string)
+					if !ok {
+						panic("magic declaration invalid")
+					}
+					magics[i] = []byte(magic)
+				}
+				handler = proto.NewMultiProxy(magics, "tcp", target)
+			}
 		case "tls":
 			cert, ok := v.Conf["cert"].(string)
 			if !ok {
