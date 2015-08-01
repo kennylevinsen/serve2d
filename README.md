@@ -1,5 +1,5 @@
 # serve2d
-A protocol detecting server, based off the serve2 library.
+A protocol detecting server, based off the https://github.com/joushou/serve2 library.
 
 You don't like having to have to decide what port to use for a service? Maybe you're annoyed by a firewall that only allows traffic to port 80? Or even a packet inspecting one that only allows real TLS traffic on port 443, but you want to SSH through none the less?
 
