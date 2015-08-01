@@ -91,6 +91,11 @@ As tls works as a transport, it can be used for anything, not just HTTP. tls + p
       nc -l 8888 < np | openssl s_client -connect hostwithserve2:443 -tls1 -quiet > np &
       ssh -p 8888 localhost
 
+Alternatively, using http://github.com/joushou/tunnel, one can simply do:
+
+      tunnel tls :8888 hostwithserve2:443
+      ssh -p 8888 localhost
+
 ## http
 Simple file-server without directory listing (might change in the future). It guards against navigating out of the directory with some simple path magic. It identifies HTTP traffic by checking for possible methods ("GET", "PUT", "HEAD", "POST", "TRACE", "PATCH", "DELETE", "OPTIONS", "CONNECT"). Forwarding to another HTTP server can be done by just putting this list of methods in as magics for a "proxy" handler.
 
