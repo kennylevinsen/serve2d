@@ -1,4 +1,6 @@
 # serve2d
+
+[![Join the chat at https://gitter.im/joushou/serve2d](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/joushou/serve2d?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A protocol detecting server, based off the https://github.com/joushou/serve2 library. Scroll down for installation and usage info..
 
 You don't like having to have to decide what port to use for a service? Maybe you're annoyed by a firewall that only allows traffic to port 80? Or even a packet inspecting one that only allows real TLS traffic on port 443, but you want to SSH through none the less?
