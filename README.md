@@ -1,5 +1,5 @@
 # serve2d
-A protocol detecting server, based off the https://github.com/joushou/serve2 library.
+A protocol detecting server, based off the https://github.com/joushou/serve2 library. Scroll down for installation and usage info..
 
 You don't like having to have to decide what port to use for a service? Maybe you're annoyed by a firewall that only allows traffic to port 80? Or even a packet inspecting one that only allows real TLS traffic on port 443, but you want to SSH through none the less?
 
@@ -23,6 +23,9 @@ It can be run with:
       ./serve2d example_conf.json
 
 Do note that the example_conf has the TLS protocol enabled, requiring a cert.pem and key.pem file (can be generated with http://golang.org/src/crypto/tls/generate_cert.go). To avoid this, simply remove the TLS entry.
+
+# Limitations
+serve2, and by extension, serve2d, can only detect protocols initiated by the client. That is, protocols where the client starts out by blindly sending a unique blob that can be used to identify the protocol.
 
 # What's up with the name?
 I called the first toy version "serve", and needed to call the new directory in my development folder something else, so it became serve2. 'd' was added to this configurable front-end (daemon), to distinguish it from the library.
