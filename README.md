@@ -19,7 +19,7 @@ serve2d can be installed with:
 
 It can be run with:
 
-      cd $GOPATH/src/joushou/serve2d
+      cd $GOPATH/src/github.com/joushou/serve2d
       go build
       ./serve2d example_conf.json
 
