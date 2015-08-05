@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/joushou/serve2"
 	"github.com/joushou/serve2/proto"
+	"github.com/joushou/serve2/utils"
 )
 
 var (
@@ -201,6 +203,60 @@ func main() {
 				logit("TLS configuration failed")
 				panic(err)
 			}
+		case "tlsmatcher":
+			target, ok := v.Conf["target"].(string)
+			if !ok {
+				panic("TLSMatcher declaration is missing valid target")
+			}
+
+			var cb func(net.Conn) (net.Conn, error)
+			dialTLS, ok := v.Conf["dialTLS"].(bool)
+			if !ok || !dialTLS {
+				cb = func(c net.Conn) (net.Conn, error) {
+					return nil, utils.DialAndProxy(c, "tcp", target)
+				}
+			} else {
+				cb = func(c net.Conn) (net.Conn, error) {
+					serverName := ""
+					proto := ""
+					hints := utils.GetHints(c)
+					if len(hints) > 0 {
+						if tc, ok := hints[len(hints)-1].(*tls.Conn); ok {
+							cs := tc.ConnectionState()
+							serverName = cs.ServerName
+							proto = cs.NegotiatedProtocol
+						}
+					}
+
+					return nil, utils.DialAndProxyTLS(c, "tcp", target, &tls.Config{
+						ServerName:         serverName,
+						NextProtos:         []string{proto},
+						InsecureSkipVerify: true,
+					})
+				}
+			}
+
+			t := proto.NewTLSMatcher(cb)
+
+			var checks proto.TLSMatcherChecks
+			if sn, ok := v.Conf["serverName"].(string); ok {
+				checks |= proto.TLSCheckServerName
+				t.ServerName = sn
+			}
+
+			if np, ok := v.Conf["negotiatedProtocol"].(string); ok {
+				checks |= proto.TLSCheckNegotiatedProtocol
+				t.NegotiatedProtocol = np
+			}
+
+			if npm, ok := v.Conf["negotiatedProtocolIsMutual"].(bool); ok {
+				checks |= proto.TLSCheckNegotiatedProtocolIsMutual
+				t.NegotiatedProtocolIsMutual = npm
+			}
+
+			t.Checks = checks
+			t.Description = fmt.Sprintf("TLSMatcher [dest: %s]", target)
+			handler = t
 		case "http":
 			h := httpHandler{}
 			msg, msgOk := v.Conf["notFoundMsg"]
