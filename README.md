@@ -96,6 +96,15 @@ Alternatively, using http://github.com/joushou/tunnel, one can simply do:
       tunnel tls :8888 hostwithserve2:443
       ssh -p 8888 localhost
 
+## tlsmatcher
+Looks for already established TLS transports, allowing for checks against some of the connection properties, such as SNI.
+
+* negotiatedProtocol (string): The protocol to look for. Example: "h2".
+* negotiatedProtocolIsMutual (bool): Check if the protocol was one that was advertised or not. Example: true.
+* serverName (string): The SNI server name to look for. Example: "google.com".
+* target (string): The target to dial upon a match. Example: "google.com:443".
+* dialTLS (bool): Whether or not to use TLS when dialing. This also copies servername and protocol. Example: true.
+
 ## http
 Simple file-server without directory listing (might change in the future). It guards against navigating out of the directory with some simple path magic. It identifies HTTP traffic by checking for possible methods ("GET", "PUT", "HEAD", "POST", "TRACE", "PATCH", "DELETE", "OPTIONS", "CONNECT"). Forwarding to another HTTP server can be done by just putting this list of methods in as magics for a "proxy" handler.
 
