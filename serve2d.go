@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -208,8 +209,31 @@ func main() {
 				panic("TLSMatcher declaration is missing valid target")
 			}
 
-			cb := func(c net.Conn) (net.Conn, error) {
-				return nil, utils.DialAndProxy(c, "tcp", target)
+			var cb func(net.Conn) (net.Conn, error)
+			dialTLS, ok := v.Conf["dialTLS"].(bool)
+			if !ok || !dialTLS {
+				cb = func(c net.Conn) (net.Conn, error) {
+					return nil, utils.DialAndProxy(c, "tcp", target)
+				}
+			} else {
+				cb = func(c net.Conn) (net.Conn, error) {
+					serverName := ""
+					proto := ""
+					hints := utils.GetHints(c)
+					if len(hints) > 0 {
+						if tc, ok := hints[len(hints)-1].(*tls.Conn); ok {
+							cs := tc.ConnectionState()
+							serverName = cs.ServerName
+							proto = cs.NegotiatedProtocol
+						}
+					}
+
+					return nil, utils.DialAndProxyTLS(c, "tcp", target, &tls.Config{
+						ServerName:         serverName,
+						NextProtos:         []string{proto},
+						InsecureSkipVerify: true,
+					})
+				}
 			}
 
 			t := proto.NewTLSMatcher(cb)
