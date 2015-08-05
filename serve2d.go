@@ -12,6 +12,7 @@ import (
 
 	"github.com/joushou/serve2"
 	"github.com/joushou/serve2/proto"
+	"github.com/joushou/serve2/utils"
 )
 
 var (
@@ -201,6 +202,37 @@ func main() {
 				logit("TLS configuration failed")
 				panic(err)
 			}
+		case "tlsmatcher":
+			target, ok := v.Conf["target"].(string)
+			if !ok {
+				panic("TLSMatcher declaration is missing valid target")
+			}
+
+			cb := func(c net.Conn) (net.Conn, error) {
+				return nil, utils.DialAndProxy(c, "tcp", target)
+			}
+
+			t := proto.NewTLSMatcher(cb)
+
+			var checks proto.TLSMatcherChecks
+			if sn, ok := v.Conf["serverName"].(string); ok {
+				checks |= proto.TLSCheckServerName
+				t.ServerName = sn
+			}
+
+			if np, ok := v.Conf["negotiatedProtocol"].(string); ok {
+				checks |= proto.TLSCheckNegotiatedProtocol
+				t.NegotiatedProtocol = np
+			}
+
+			if npm, ok := v.Conf["negotiatedProtocolIsMutual"].(bool); ok {
+				checks |= proto.TLSCheckNegotiatedProtocolIsMutual
+				t.NegotiatedProtocolIsMutual = npm
+			}
+
+			t.Checks = checks
+			t.Description = fmt.Sprintf("TLSMatcher [dest: %s]", target)
+			handler = t
 		case "http":
 			h := httpHandler{}
 			msg, msgOk := v.Conf["notFoundMsg"]
