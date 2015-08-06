@@ -103,10 +103,10 @@ Alternatively, using http://github.com/joushou/tunnel, one can simply do:
 ## tlsmatcher
 Looks for already established TLS transports, allowing for checks against some of the connection properties, such as SNI.
 
-* negotiatedProtocol (string): The protocol to look for. Example: "h2".
-* negotiatedProtocolIsMutual (bool): Check if the protocol was one that was advertised or not. Example: true.
-* serverName (string): The SNI server name to look for. Example: "google.com".
-* target (string): The target to dial upon a match. Example: "google.com:443".
+* negotiatedProtocols (string): The protocol to look for. Defaults to no check. Example: ["h2", "h2-14"].
+* negotiatedProtocolIsMutual (bool): Check if the protocol was one that was advertised or not.Defaults to no check. Example: true.
+* serverNames (string): The SNI server name to look for. Defaults to no check. Example: ["http2.golang.org"].
+* target (string): The target to dial upon a match. Example: "http2.golang.org:443".
 * dialTLS (bool): Whether or not to use TLS when dialing. This also copies servername and protocol. Example: true.
 
 ## http

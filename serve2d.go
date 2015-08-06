@@ -239,14 +239,28 @@ func main() {
 			t := proto.NewTLSMatcher(cb)
 
 			var checks proto.TLSMatcherChecks
-			if sn, ok := v.Conf["serverName"].(string); ok {
+			if sn, ok := v.Conf["serverNames"].([]interface{}); ok {
 				checks |= proto.TLSCheckServerName
-				t.ServerName = sn
+				t.ServerNames = make([]string, len(sn))
+				for i, x := range sn {
+					s, ok := x.(string)
+					if !ok {
+						panic("TLSMatcher serverNames declaration invalid")
+					}
+					t.ServerNames[i] = s
+				}
 			}
 
-			if np, ok := v.Conf["negotiatedProtocol"].(string); ok {
+			if np, ok := v.Conf["negotiatedProtocols"].([]interface{}); ok {
 				checks |= proto.TLSCheckNegotiatedProtocol
-				t.NegotiatedProtocol = np
+				t.NegotiatedProtocols = make([]string, len(np))
+				for i, x := range np {
+					n, ok := x.(string)
+					if !ok {
+						panic("TLSMatcher negotiatedProtocols declaration invalid")
+					}
+					t.NegotiatedProtocols[i] = n
+				}
 			}
 
 			if npm, ok := v.Conf["negotiatedProtocolIsMutual"].(bool); ok {
