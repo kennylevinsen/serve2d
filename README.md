@@ -13,7 +13,8 @@ So, what does this mean? Well, it means that if you run serve2 for port 22, 80 a
 All bytes read by serve2 are of course fed into whatever ends up having to handle the protocol. For more details on the protocol matching, look at the serve2 library directly.
 
 # Installation
-serve2d can be installed with:
+serve2d can either be installed from source (super simple with Go), or by downloading a prepackaged binary release.
+To download source:
 
       go get github.com/joushou/serve2d
 
@@ -22,8 +23,6 @@ It can be run with:
       cd $GOPATH/src/github.com/joushou/serve2d
       go build
       ./serve2d example_conf.json
-
-Do note that the example_conf has the TLS protocol enabled, requiring a cert.pem and key.pem file (can be generated with http://golang.org/src/crypto/tls/generate_cert.go). To avoid this, simply remove the TLS entry.
 
 # Limitations
 serve2, and by extension, serve2d, can only detect protocols initiated by the client. That is, protocols where the client starts out by blindly sending a unique blob that can be used to identify the protocol.
