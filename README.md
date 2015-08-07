@@ -119,6 +119,15 @@ Simple file-server without directory listing (might change in the future). It gu
 * notFoundMsg (string, optional): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
 * notFoundFile (string, optional): 404 file. Example: "404.html"
 
+## http2
+Same as http, but serving HTTP/2 over TLS (h2) using the github.com/joushou/http2 fork. Identifies HTTP/2 traffic using the TLS negotiated protocol feature.
+TLS *must* advertise "h2" and "h2-14" *before* "http/1.1" for this to work.
+
+* path (string): Path to serve from. Example: "/srv/http/"
+* defaultFile (string, optional): File to serve for /. Example: "index.html"
+* notFoundMsg (string, optional): 404 body. Example: "<!DOCTYPE html><html><body>Not Found</body></html>"
+* notFoundFile (string, optional): 404 file. Example: "404.html"
+
 ## echo
 A test protocol. Requires that the client starts out by sending "ECHO" (which will by echoed by itself, of course). No configuration.
 
