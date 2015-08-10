@@ -14,7 +14,7 @@ All bytes read by serve2 are of course fed into whatever ends up having to handl
 
 # Installation
 serve2d can either be installed from source (super simple with Go), or by downloading a prepackaged binary release.
-To download source:
+To download source (requires Go 1.4.2 or above):
 
       go get github.com/joushou/serve2d
 
