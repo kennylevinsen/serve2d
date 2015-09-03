@@ -24,6 +24,10 @@ It can be run with:
       go build
       ./serve2d example_conf.json
 
+Arch Linux also has serve2d in the AUR: https://aur.archlinux.org/packages/serve2d/
+
+Or, use the unstable version: https://aur.archlinux.org/packages/serve2d-git/
+
 # Limitations
 serve2, and by extension, serve2d, can only detect protocols initiated by the client. That is, protocols where the client starts out by blindly sending a unique blob that can be used to identify the protocol.
 
