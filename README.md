@@ -1,4 +1,4 @@
-# serve2d [![Join the chat at https://gitter.im/joushou/serve2d](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/joushou/serve2d?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# serve2d
 
 A protocol detecting server, based off the https://github.com/joushou/serve2 library. Scroll down for installation and usage info.
 
