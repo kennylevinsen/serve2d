@@ -16,13 +16,13 @@ All bytes read by serve2 are of course fed into whatever ends up having to handl
 serve2d can either be installed from source (super simple with Go), or by downloading a prepackaged binary release.
 To download source (requires Go 1.4.2 or above):
 
-      go get github.com/joushou/serve2d
+	go get github.com/joushou/serve2d
 
 It can be run with:
 
-      cd $GOPATH/src/github.com/joushou/serve2d
-      go build
-      ./serve2d example_conf.json
+	cd $GOPATH/src/github.com/joushou/serve2d
+	go build
+	./serve2d example_conf.json
 
 # Limitations
 serve2, and by extension, serve2d, can only detect protocols initiated by the client. That is, protocols where the client starts out by blindly sending a unique blob that can be used to identify the protocol.
@@ -33,44 +33,46 @@ I called the first toy version "serve", and needed to call the new directory in 
 # Usage
 Due to potentially large amounts of parameters, serve2d consumes a json configuration file. The only parameter taken by serve2d is the name of this file. The format is as follows:
 
-      {
-         // Listening address as given directly to net.Listen.
-         "address": ":80",
+```
+{
+	// Listening address as given directly to net.Listen.
+	"address": ":80",
 
-         // Maximum read size for protocol detection before fallback or failure.
-         // Defaults to 128.
-         "maxRead": 10,
+	// Maximum read size for protocol detection before fallback or failure.
+	// Defaults to 128.
+	"maxRead": 10,
 
-         // Logging to stdout.
-         // Defaults to false.
-         "logStdout": true,
+	// Logging to stdout.
+	// Defaults to false.
+	"logStdout": true,
 
-         // Logging to file. Note that only one logging destination can be
-         // enabled at a given time.
-         // Defaults to empty string, meaning disabled.
-         "logFile": "serve2d.log",
+	// Logging to file. Note that only one logging destination can be
+	// enabled at a given time.
+	// Defaults to empty string, meaning disabled.
+	"logFile": "serve2d.log",
 
-         // The enabled ProtocolHandlers.
-         "protocols": [
-            {
-               // Name of the ProtocolHandler.
-               "kind": "proxy",
+	// The enabled ProtocolHandlers.
+	"protocols": [
+		{
+			// Name of the ProtocolHandler.
+			"kind": "proxy",
 
-               // Setting this flag to true means that this ProtocolHandler
-               // will not be used in protocol detection, but instead be used
-               // as a fallback in case of failed detection.
-               // Defaults to false.
-               "default": false,
+			// Setting this flag to true means that this ProtocolHandler
+			// will not be used in protocol detection, but instead be used
+			// as a fallback in case of failed detection.
+			// Defaults to false.
+			"default": false,
 
-               // Protocol-specific configuration.
-               // Defaults to empty.
-               "conf": {
-                  "magic": "SSH",
-                  "target": "localhost:22"
-               }
-            }
-         ]
-      }
+			// Protocol-specific configuration.
+			// Defaults to empty.
+			"conf": {
+				"magic": "SSH",
+				"target": "localhost:22"
+			}
+		}
+	]
+}
+```
 
 # ProtocolHandlers
 
@@ -90,14 +92,14 @@ The certificates required can be generated with http://golang.org/src/crypto/tls
 
 As tls works as a transport, it can be used for anything, not just HTTP. tls + proxy handler for SSH would make it possible to do the following to grant you stealthy SSH over TLS, which would be indistinguishable from HTTPS traffic (the named pipe/mkfifo is used to connect both stdin and stdout of netcat and openssl):
 
-      mkfifo np
-      nc -l 8888 < np | openssl s_client -connect hostwithserve2:443 -tls1 -quiet > np &
-      ssh -p 8888 localhost
+	mkfifo np
+	nc -l 8888 < np | openssl s_client -connect hostwithserve2:443 -tls1 -quiet > np &
+	ssh -p 8888 localhost
 
 Alternatively, using http://github.com/joushou/tunnel, one can simply do:
 
-      tunnel tls :8888 hostwithserve2:443
-      ssh -p 8888 localhost
+	tunnel tls :8888 hostwithserve2:443
+	ssh -p 8888 localhost
 
 ## tlsmatcher
 Looks for already established TLS transports, allowing for checks against some of the connection properties, such as SNI.
