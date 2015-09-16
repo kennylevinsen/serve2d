@@ -94,13 +94,11 @@ The certificates required can be generated with http://golang.org/src/crypto/tls
 * key (string): The key PEM file path to use for the server. Example: "key.pem".
 * protos ([]string): The protocols the TLS server will advertise support for in the handshake. Example: ["http/1.1", "ssh"]
 
-As tls works as a transport, it can be used for anything, not just HTTP. tls + proxy handler for SSH would make it possible to do the following to grant you stealthy SSH over TLS, which would be indistinguishable from HTTPS traffic (the named pipe/mkfifo is used to connect both stdin and stdout of netcat and openssl):
+As tls works as a transport, it can be used for anything, not just HTTP. tls + proxy handler for SSH would make it possible to do the following to grant you stealthy SSH over TLS, which would be indistinguishable from HTTPS traffic:
 
-	mkfifo np
-	nc -l 8888 < np | openssl s_client -connect hostwithserve2:443 -tls1 -quiet > np &
-	ssh -p 8888 localhost
+	ssh -oProxyCommand="openssl s_client -connect %h:%p -tls1 -quiet" -p443 hostwithserve2
 
-Alternatively, using http://github.com/joushou/tunnel, one can simply do:
+Alternatively, using http://github.com/joushou/tunnel, one can do:
 
 	tunnel tls :8888 hostwithserve2:443
 	ssh -p 8888 localhost
