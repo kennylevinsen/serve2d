@@ -1,4 +1,4 @@
-# serve2d [![Join the chat at https://gitter.im/joushou/serve2d](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/joushou/serve2d?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# serve2d
 
 A protocol detecting server, based off the https://github.com/joushou/serve2 library. Scroll down for installation and usage info.
 
@@ -23,6 +23,10 @@ It can be run with:
 	cd $GOPATH/src/github.com/joushou/serve2d
 	go build
 	./serve2d example_conf.json
+
+Arch Linux also has serve2d in the AUR: https://aur.archlinux.org/packages/serve2d/
+
+Or, use the unstable version: https://aur.archlinux.org/packages/serve2d-git/
 
 # Limitations
 serve2, and by extension, serve2d, can only detect protocols initiated by the client. That is, protocols where the client starts out by blindly sending a unique blob that can be used to identify the protocol.
