@@ -96,12 +96,11 @@ The certificates required can be generated with http://golang.org/src/crypto/tls
 
 As tls works as a transport, it can be used for anything, not just HTTP. tls + proxy handler for SSH would make it possible to do the following to grant you stealthy SSH over TLS, which would be indistinguishable from HTTPS traffic:
 
-	ssh -oProxyCommand="openssl s_client -connect %h:%p -tls1 -quiet" -p443 hostwithserve2
+	ssh -oProxyCommand="openssl s_client -connect %h:%p -tls1 -quiet" -p443 serve2dhost
 
 Alternatively, using http://github.com/joushou/tunnel, one can do:
 
-	tunnel tls :8888 hostwithserve2:443
-	ssh -p 8888 localhost
+	ssh -oProxyCommand="tunnel - tls:%h:%p" -p443 serve2dhost
 
 ## tlsmatcher
 Looks for already established TLS transports, allowing for checks against some of the connection properties, such as SNI.
