@@ -116,7 +116,7 @@ func main() {
 
 	if conf.LogStdout || conf.LogFile != "" {
 		if conf.LogFile != "" {
-			file, err := os.Create(conf.LogFile)
+			file, err := os.OpenFile(conf.LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 			if err != nil {
 				logit("Failed to open logfile: %s", conf.LogFile)
 				panic(err)
