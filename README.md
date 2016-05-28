@@ -1,4 +1,4 @@
-# serve2d
+# serve2d [![Go Report Card](https://goreportcard.com/badge/joushou/serve2d)](https://goreportcard.com/report/joushou/serve2d)
 
 A protocol detecting server, based off the https://github.com/joushou/serve2 library. Scroll down for installation and usage info.
 
