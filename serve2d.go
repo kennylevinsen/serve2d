@@ -11,9 +11,9 @@ import (
 	"os"
 	"path"
 
-	"github.com/joushou/serve2"
-	"github.com/joushou/serve2/proto"
-	"github.com/joushou/serve2/utils"
+	"github.com/kennylevinsen/serve2"
+	"github.com/kennylevinsen/serve2/proto"
+	"github.com/kennylevinsen/serve2/utils"
 )
 
 var (

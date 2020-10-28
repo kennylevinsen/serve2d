@@ -1,6 +1,6 @@
-# serve2d [![Go Report Card](https://goreportcard.com/badge/joushou/serve2d)](https://goreportcard.com/report/joushou/serve2d)
+# serve2d [![Go Report Card](https://goreportcard.com/badge/kennylevinsen/serve2d)](https://goreportcard.com/report/kennylevinsen/serve2d)
 
-A protocol detecting server, based off the https://github.com/joushou/serve2 library. Scroll down for installation and usage info.
+A protocol detecting server, based off the https://github.com/kennylevinsen/serve2 library. Scroll down for installation and usage info.
 
 You don't like having to have to decide what port to use for a service? Maybe you're annoyed by a firewall that only allows traffic to port 80? Or even a packet inspecting one that only allows real TLS traffic on port 443, but you want to SSH through none the less?
 
@@ -16,11 +16,11 @@ All bytes read by serve2 are of course fed into whatever ends up having to handl
 serve2d can either be installed from source (super simple with Go), or by downloading a prepackaged binary release.
 To download source (requires Go 1.4.2 or above):
 
-	go get github.com/joushou/serve2d
+	go get github.com/kennylevinsen/serve2d
 
 It can be run with:
 
-	cd $GOPATH/src/github.com/joushou/serve2d
+	cd $GOPATH/src/github.com/kennylevinsen/serve2d
 	go build
 	./serve2d example_conf.json
 
@@ -98,7 +98,7 @@ As tls works as a transport, it can be used for anything, not just HTTP. tls + p
 
 	ssh -oProxyCommand="openssl s_client -connect %h:%p -tls1 -quiet" -p443 serve2dhost
 
-Alternatively, using http://github.com/joushou/tunnel, one can do:
+Alternatively, using http://github.com/kennylevinsen/tunnel, one can do:
 
 	ssh -oProxyCommand="tunnel - tls:%h:%p" -p443 serve2dhost
 
@@ -126,4 +126,4 @@ A test protocol. Requires that the client starts out by sending "ECHO" (which wi
 Same as DISCARD, start by sending "DISCARD". No configuration. If you feel silly, try DISCARD over TLS!
 
 # More info
-For more details about this project, see the underlying library: http://github.com/joushou/serve2
+For more details about this project, see the underlying library: http://github.com/kennylevinsen/serve2
